@@ -1,0 +1,5 @@
+# base configuration
+hosts = localhost
+user = vagrant
+password = vagrant
+port = 2222

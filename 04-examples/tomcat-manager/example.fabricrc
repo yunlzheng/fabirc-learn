@@ -1,0 +1,10 @@
+# Host Configuration
+user = vagrant
+password = vagrant
+hosts = localhost
+port = 2222
+
+# Tomcat Instance Configuration
+tomcat_source = http://apache.fayea.com/apache-mirror/tomcat/tomcat-7/v7.0.53/bin/apache-tomcat-7.0.53.tar.gz
+tomcat_dir = /home/vagrant/opts/
+tomcat_folder= apache-tomcat-7.0.53
