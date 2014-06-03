@@ -57,6 +57,7 @@ def install_requirements():
     with settings(warn_only=True):
         if run("java -version").failed:
             install_java()
+        
         if run("test -d %s" % tomcat_home).failed:
             install_tomcat()
 
@@ -67,7 +68,7 @@ def tomcat_start():
     启动远程Tomcat服务器
     """
     with cd(tomcat_home + "/bin"):
-        run("./startup.sh")
+        run("./catalina.sh start")
 
 
 @task
@@ -84,8 +85,8 @@ def tomcat_restart():
     """
     重启Tomcat服务器
     """
-    with cd(tomcat_home + "/bin"):
-        run("./shutdown.sh")
+    tomcat_stop()
+    tomcat_start()
 
 
 @task

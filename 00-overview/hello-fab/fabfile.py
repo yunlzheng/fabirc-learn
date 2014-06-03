@@ -1,8 +1,10 @@
 # codeing: utf-8
+from fabric.api import *
 
 
 def hello(name="world"):
     print("Hello %s!" % name)
+    run('echo "hello,world"')
 
 
 def who_am_i(name='yunlong'):
