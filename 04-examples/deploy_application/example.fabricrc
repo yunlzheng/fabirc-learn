@@ -1,5 +1,0 @@
-# Host Configuration
-user = vagrant
-password = vagrant
-hosts = localhost
-port =2222
