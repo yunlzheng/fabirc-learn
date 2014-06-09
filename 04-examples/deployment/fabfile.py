@@ -46,11 +46,11 @@ def deploy():
     with settings(warn_only=True):
         if run("test -d %s" % code_dir).failed:
             run("git clone https://github.com/yunlzheng/chat.git %s" % code_dir)
-    with cd(code_dir):
-        run("git pull")
-        run("sudo pip install -r requirements.txt")
-        run("sudo killall -9 python")
-        run("python server.py")
+        with cd(code_dir):
+            run("git pull")
+            run("sudo pip install -r requirements.txt")
+            run("sudo killall -9 python")
+            run("python server.py")
 
 def start():
     """

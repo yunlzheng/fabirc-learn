@@ -44,6 +44,8 @@ fab hello:name=Jeff
 
 > 从[github](https://github.com/yunlzheng/chat)上拉去源码并部署到服务器
 
+> [点击这里访问](http://localhost:8888)
+
 ```
 from __future__ import with_statement
 from fabric.api import *
