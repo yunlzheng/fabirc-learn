@@ -1,57 +1,103 @@
-Authorize Manager
+Simple As Fabric -认证
 =================
 
-## Fabric Evn
+## 认证方式 = SSH的认证方式
 
+* 基于用户名密码的认证
+* 基于SSH公钥的认证
+
+## Fabric 环境变量
+
+```
 * env.hosts
 * env.user
 * env.password
 * env.passwords
 * env.key_filename
+```
 
 ## Password
 
-### Example
+两个常见的场景： 
+
+场景一：
+
+一堆服务器，用户名相同，密码相同
 
 ```
 from fabric.api import *
-
-
-env.hosts = ['vagrant@127.0.0.1:2222']
-
-env.passwords = {
-    'vagrant@127.0.0.1:2222': 'vagrant'
-}
-
+env.hosts = ['127.0.0.1:3001', '127.0.0.1:3002', '27.0.0.1:3003']
+env.user = 'ubuntu'
+env.password = '123456'
 
 @task
 def echo():
     run('echo "hello,world"')
 ```
 
-## SSH
+场景二：
 
-### local
+一堆服务器，用户名相同，密码不同
 
-__Generator SSH Private Key__
+```
+from fabric.api import *
+env.hosts = ['127.0.0.1:3001', '127.0.0.1:3002', '27.0.0.1:3003']
+env.user = 'ubuntu'
+env.passwords = {
+    'ubuntu@127.0.0.1:3001': '123456',
+    'ubuntu@127.0.0.1:3002': '123456',
+    'ubuntu@127.0.0.1:3003': '123456'
+}
+
+@task
+def echo():
+    run('echo "hello,world"')
+```
+
+场景三：
+
+一堆服务器，用户名不同，密码不同
+
+```
+from fabric.api import *
+env.hosts = ['ubuntu@127.0.0.1:3001', 'ubuntu@127.0.0.1:3002', 'ubuntu@127.0.0.1:3003']
+env.passwords = {
+    'ubuntu@127.0.0.1:3001': '123456',
+    'ubuntu@127.0.0.1:3002': '123456',
+    'ubuntu@127.0.0.1:3003': '123456'
+}
+
+@task
+def echo():
+    run('echo "hello,world"')
+```
+
+
+## SSH公钥认证
+
+当然更安全的方式：基于SSH的认证
+
+### 本地
+
+__生成 SSH Private Key__
 
 ```
 ssh-keygen
 ```
 
-__Put SSH__
+__提交 SSH公钥到服务器__
 
 ```
 scp -P 2222 id_rsa.pub vagrant@127.0.0.1:~/.ssh/
 ```
 
-### server
+### 服务器端
 
 ```
 cat id_rsa.pub >> authorized_keys
 ```
 
-### Example
+### 演示时间
 
 ```
 from fabric.colors import *

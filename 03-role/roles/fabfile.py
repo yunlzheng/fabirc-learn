@@ -9,25 +9,34 @@ env.passwords = {
     'ubuntu@127.0.0.1:3003': '123456'
 }
 
-env.roledefs = {'nginx': ['ubuntu@127.0.0.1:3001', 'ubuntu@127.0.0.1:3002'], 'mysql': 'ubuntu@127.0.0.1:3003'}
-
-@roles('mysql')
-@task
-def mysql_start():
-  ''' mysql start '''
-  sudo('/etc/init.d/mysql start')
+env.roledefs = {
+  'nginx': ['ubuntu@127.0.0.1:3001', 'ubuntu@127.0.0.1:3002'],
+  'mysql': ['ubuntu@127.0.0.1:3003']
+  }
 
 @roles('nginx')
 @task
 def nginx_start():
     ''' nginx start '''
-    sudo('/etc/init.d/nginx start')
+    run('echo "nginx start"')
 
 @roles('nginx')
 @task
 def nginx_stop():
     ''' nginx stop '''
-    sudo('/etc/init.d/nginx stop')
+    run('echo "nginx stop"')
+
+@roles('mysql')
+@task
+def mysql_start():
+    ''' mysql start '''
+    run('echo "mysql start"')
+
+@roles('mysql')
+@task
+def mysql_stop():
+    ''' mysql stop '''
+    run('echo "mysql stop"')
 
 @task
 def echo():

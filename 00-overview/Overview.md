@@ -1,143 +1,109 @@
-[Overview](http://docs.fabfile.org/en/1.8/tutorial.html)
-========
+Simple As Fabric -Overview
+==========================
 
-## Task arguments
+> Fabric是一个基于SSH的Python命令行工具
+
+
+## Hello Fabric
+
+> pip install fabric
 
 __Code__
 
 ```
 def hello(name="world"):
-    print("Hello %s!" % name)
+    run('echo "hello,world"')
 ```
 
 __Execute__
 
 ```
 fab hello:Jeff
+```
 
-or
+或者
 
+```
 fab hello:name=Jeff
-
 ```
 
-## Local commands
+## Fabric能做什么？
 
-__Normal Project Structs__
+* 系统和服务器管理
+* 应用部署
 
-```
-|-- __init__.py
-|-- app.wsgi
-|-- fabfile.py <-- our fabfile!
-|-- manage.py
-`-- my_app
-    |-- __init__.py
-    |-- models.py
-    |-- templates
-    |   `-- index.html
-    |-- tests.py
-    |-- urls.py
-    `-- views.py
-```
+## Fabric的优势
 
-```
-from fabric.api import local
+* 角色定义
+* 代码易读
+* 封装了本地、远程操作
+* 参数灵活 
+* 完整的日志输出
 
-def prepare_deploy():
-    local("./manage.py test my_app")
-    local("git add -p && git commit")
-    local("git push")
-```
+## 演示时间
 
-or
-
-```
-from fabric.api import local
-
-def test():
-    local("./manage.py test my_app")
-
-def commit():
-    local("git add -p && git commit")
-
-def push():
-    local("git push")
-
-def prepare_deploy():
-    test()
-    commit()
-    push()
-```
-
-## Failure handling
-
-```
-from __future__ import with_statement
-from fabric.api import local, settings, abort
-from fabric.contrib.console import confirm
-
-def test():
-    with settings(warn_only=True):
-        result = local('./manage.py test my_app', capture=True)
-    if result.failed and not confirm("Tests failed. Continue anyway?"):
-        abort("Aborting at user request.")
-```
-
-## Making connections¶
-
-```
-def deploy():
-    code_dir = '/srv/django/myproject'
-    with cd(code_dir):
-        run("git pull")
-        run("touch app.wsgi")
-```
-
-## Remote interactivity¶
-
-```
-def deploy():
-    code_dir = '/srv/django/myproject'
-    with settings(warn_only=True):
-        if run("test -d %s" % code_dir).failed:
-            run("git clone user@vcshost:/path/to/repo/.git %s" % code_dir)
-    with cd(code_dir):
-        run("git pull")
-        run("touch app.wsgi")
-```
-
-## Conclusion
+> 从[github](https://github.com/yunlzheng/chat)上拉去源码并部署到服务器
 
 ```
 from __future__ import with_statement
 from fabric.api import *
+from fabric.colors import *
 from fabric.contrib.console import confirm
 
-env.hosts = ['my_server']
 
-def test():
-    with settings(warn_only=True):
-        result = local('./manage.py test my_app', capture=True)
-    if result.failed and not confirm("Tests failed. Continue anyway?"):
-        abort("Aborting at user request.")
+def installs():
+    with cd("/home"):
+        run("sudo apt-get install git")
+        run("sudo apt-get install redis-server")
+        run("sudo apt-get install python-pip")
+        run("sudo apt-get install build-essential")
+
 
 def commit():
     local("git add -p && git commit")
 
+
 def push():
     local("git push")
 
+
 def prepare_deploy():
-    test()
     commit()
     push()
 
+@settings(warn_only=True)
 def deploy():
-    code_dir = '/srv/django/myproject'
-    with settings(warn_only=True):
-        if run("test -d %s" % code_dir).failed:
-            run("git clone user@vcshost:/path/to/repo/.git %s" % code_dir)
+    code_dir = '/home/vagrant/git/chat'
+    if run("test -d %s" % code_dir).failed:
+        run("git clone https://github.com/yunlzheng/chat.git %s" % code_dir)
+
     with cd(code_dir):
         run("git pull")
-        run("touch app.wsgi")
+        run("sudo pip install -r requirements.txt")
+        run("sudo killall -9 python")
+        run("nohup python server.py &")
+
+```
+
+## 基本用法
+
+```
+fab -l             -- 显示可用的task（命令）
+fab -H             -- 指定host，支持多host逗号分开
+fab -R             -- 指定role，支持多个
+fab -P             -- 并发数，默认是串行
+fab -w             -- warn_only，默认是碰到异常直接abort退出
+fab -f             -- 指定入口文件
+```
+
+## 主要API
+
+```
+* cd                --进入远程服务器特定目录
+* lcd               --进入本地服务器特定目录
+* run               --在远程运行command
+* sudo              --以root身份运行command
+* local             --在本地运行command
+* get               --获取远程文件
+* put               --上传文件到远程
 ```
