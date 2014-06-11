@@ -5,17 +5,6 @@ from fabric.colors import *
 from fabric.contrib.console import confirm
 
 
-def installs():
-    """
-    安装服务器环境依赖 git,redis-server
-    """
-    with cd("/home"):
-        run("sudo apt-get install git")
-        run("sudo apt-get install redis-server")
-        run("sudo apt-get install python-pip")
-        run("sudo apt-get install build-essential")
-
-
 def commit():
     """
     commit本地代码
@@ -38,6 +27,17 @@ def prepare_deploy():
     push()
 
 
+def installs():
+    """
+    安装服务器环境依赖 git,redis-server
+    """
+    with cd("/home"):
+        run("sudo apt-get install git")
+        run("sudo apt-get install redis-server")
+        run("sudo apt-get install python-pip")
+        run("sudo apt-get install build-essential")
+
+
 def deploy():
     """
     拉取远程代码并在服务器运行
@@ -50,7 +50,7 @@ def deploy():
             run("git pull")
             run("sudo pip install -r requirements.txt")
             run("sudo killall -9 python")
-            run("python server.py")
+            run("python server.py", pty=False)
 
 def start():
     """
@@ -63,10 +63,11 @@ def start():
         else:
             with cd(code_dir):
                 run("sudo killall -9 python")
-                run("python server.py")
+                run("python server.py", pty=False)
+                return
 
 def stop():
     """
     停止应用程序
     """
-    run("sudo killall -9 python")
+    run("sudo killall -9 python", pty=False)

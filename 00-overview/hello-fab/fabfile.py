@@ -6,7 +6,7 @@ def hello(name="world"):
     """
     Usage: 'fab -c example.fabricc hello' 在配置文件制定的服务器上运行echo
     """
-    run('echo "hello,world"')
+    run('echo "Hello Everyone, I am Fabric"')
 
 def ls(local_dir='/Users/ylzheng', remote_dir='/home/vagrant'):
     """
